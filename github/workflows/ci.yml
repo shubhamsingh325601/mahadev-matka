@@ -1,0 +1,31 @@
+name: Node.js CI (Pull Request Check)
+
+on:
+  pull_request:
+    branches: [ "master", "develop" ]
+
+jobs:
+  test-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Lint Check
+        # This will FAIL if there are errors. 
+        # This is good! It tells you to run 'npm run lint:fix' locally before merging.
+        run: npm run lint
+
+      # If you have tests, uncomment this:
+      # - name: Run Tests
+      #   run: npm test

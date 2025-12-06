@@ -1,0 +1,37 @@
+name: CI/CD to Render
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Lint (and Fix if needed)
+        # Your logic: If lint fails (||), run lint:fix. 
+        # If lint:fix succeeds, the pipeline continues.
+        run: |
+          echo "Running Lint..."
+          npm run lint || (echo "Lint failed! Attempting to fix..." && npm run lint:fix)
+
+      - name: Trigger Render Deployment
+        # This only runs if the previous steps passed
+        if: success()
+        run: |
+          echo "Linting passed/fixed. Triggering Render Deploy..."
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
