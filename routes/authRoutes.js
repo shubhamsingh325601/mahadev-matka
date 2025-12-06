@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 const { authController } = require('@controllers');
-const { validate, protect } = require('@middleware'); 
+const { validate } = require('@middleware'); 
 
 // POST register
 router.post('/register', validate('auth', 'register'), authController.register);
@@ -17,10 +17,6 @@ router.post('/login', validate('auth', 'login'), authController.login);
 // Body: refreshToken
 router.post('/refresh-token', validate('auth', 'refreshToken'), authController.refreshToken);
 
-// POST logout
-// Headers: Authorization: Bearer <accessToken>
-router.post('/logout', protect, authController.logout);
-
 // POST forgot password
 router.post('/forgot-password', validate('auth', 'forgotPassword'), authController.forgotPassword);
 
@@ -29,6 +25,6 @@ router.post('/reset-password', validate('auth', 'resetPassword'), authController
 
 // DELETE account
 // Headers: Authorization: Bearer <accessToken>
-router.delete('/delete-account', protect, authController.deleteAccount);
+router.delete('/delete-account',  authController.deleteAccount);
 
 module.exports = router;
