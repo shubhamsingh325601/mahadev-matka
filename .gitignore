@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment variables (Protecting secrets)
+.env
+.env*
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+.nyc_output/
+coverage/
+
+# Logs and System files
+*.log
+.DS_Store
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Cache
+.npm
+.eslintcache

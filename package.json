@@ -1,0 +1,43 @@
+{
+  "name": "betting",
+  "version": "1.0.0",
+  "description": "Betting Backend - Express.js API with MongoDB",
+  "main": "server.js",
+  "author": "Shubham Singh",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "set NODE_ENV=development && node server.js",
+    "staging": "set NODE_ENV=staging && node server.js",
+    "prod": "set NODE_ENV=production && node server.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/betting.git"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "rest-api",
+    "nodejs"
+  ]
+}
