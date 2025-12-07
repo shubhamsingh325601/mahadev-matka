@@ -6,6 +6,8 @@ const { sendSuccess } = require('@utils');
 
 // Routes
 const { userRoutes, authRoutes } = require('@routes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('@config/swagger');
 
 const app = express();
 
@@ -45,6 +47,9 @@ app.use(`/api/${config.API_VERSION}/users`, userRoutes);
 
 // Auth API Routes
 app.use(`/api/${config.API_VERSION}/auth`, authRoutes);
+
+// Swagger UI for API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ============================================
 // 404 HANDLER

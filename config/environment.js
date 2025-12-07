@@ -13,7 +13,8 @@ if (fs.existsSync(envFilePath)) {
 module.exports = {
   NODE_ENV,
   PORT: process.env.PORT || 5000,
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/betting',
+  // FIXED: Replaced '@' in the password with '%40'
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://database_admin:MahadevMakta%404753@mahadevmatka.wvjr16t.mongodb.net/?appName=MahadevMatka',
   LOG_LEVEL: process.env.LOG_LEVEL || 'debug',
   API_VERSION: process.env.API_VERSION || 'v1',
 };

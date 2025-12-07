@@ -13,10 +13,10 @@ class UserRepository extends BaseRepository {
   }
 
   /**
-   * Find user by email
+   * Find user by username
    */
-  async findByEmail(email) {
-    const user = await this.model.findOne({ email });
+  async findByUsername(username) {
+    const user = await this.model.findOne({ username });
     if (!user) {
       throw new Error('User not found');
     }
@@ -24,10 +24,10 @@ class UserRepository extends BaseRepository {
   }
 
   /**
-   * Check if email exists
+   * Check if phone number exists
    */
-  async emailExists(email) {
-    return await this.model.exists({ email });
+  async phoneExists(phone) {
+    return await this.model.exists({ phone });
   }
 
   /**
@@ -69,14 +69,14 @@ class UserRepository extends BaseRepository {
   }
 
   /**
-   * Search users by name or email
+   * Search users by username or phone
    */
   async search(query, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
     const searchFilter = {
       $or: [
-        { name: { $regex: query, $options: 'i' } },
-        { email: { $regex: query, $options: 'i' } },
+        { username: { $regex: query, $options: 'i' } },
+        { phone: { $regex: query, $options: 'i' } },
       ],
     };
 

@@ -20,6 +20,13 @@ class AuthRepository extends BaseRepository {
   }
 
   /**
+   * Check if a phone number already exists
+   */
+  async phoneExists(phone) {
+    return await this.model.exists({ phone });
+  }
+
+  /**
    * Find user by ID with Refresh Token explicitly selected
    * (RefreshToken is select: false by default)
    */

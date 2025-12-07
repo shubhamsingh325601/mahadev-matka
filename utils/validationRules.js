@@ -7,17 +7,18 @@ const validationRules = {
   // Auth validation rules
   auth: {
     register: {
-      name: { required: true, type: 'string', min: 2, max: 100 },
-      email: { required: true, type: 'email' },
+      username: { required: true, type: 'string', min: 2, max: 100 },
+      email: { required: false, type: 'email' },
+      phone: { required: true, type: 'string', pattern: /^[0-9]{10}$/, unique: true },
       password: { required: true, type: 'string', min: 6, max: 50 },
-      phone: { required: false, type: 'string', pattern: /^[0-9]{10}$/ },
+      confirmPassword: { required: true, type: 'string', min: 6, max: 50, matches: 'password' },
     },
     login: {
-      email: { required: true, type: 'email' },
+      phone: { required: true, type: 'string', pattern: /^[0-9]{10}$/ },
       password: { required: true, type: 'string', min: 6 },
     },
     forgotPassword: {
-      email: { required: true, type: 'email' },
+      phone: { required: true, type: 'string', pattern: /^[0-9]{10}$/ },
     },
     resetPassword: {
       resetToken: { required: true, type: 'string' },
@@ -31,13 +32,13 @@ const validationRules = {
   // User validation rules
   user: {
     create: {
-      name: { required: true, type: 'string', min: 2, max: 100 },
-      email: { required: true, type: 'email' },
-      phone: { required: false, type: 'string', pattern: /^[0-9]{10}$/ },
+      username: { required: true, type: 'string', min: 2, max: 100 },
+      email: { required: false, type: 'email' },
+      phone: { required: true, type: 'string', pattern: /^[0-9]{10}$/, unique: true },
       status: { required: false, type: 'string', enum: ['active', 'inactive', 'banned'] },
     },
     update: {
-      name: { required: false, type: 'string', min: 2, max: 100 },
+      username: { required: false, type: 'string', min: 2, max: 100 },
       email: { required: false, type: 'email' },
       phone: { required: false, type: 'string', pattern: /^[0-9]{10}$/ },
       status: { required: false, type: 'string', enum: ['active', 'inactive', 'banned'] },

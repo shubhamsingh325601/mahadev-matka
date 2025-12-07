@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); // Make sure you have installed 'bcrypt' or 'bcryptjs'
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: true,
       lowercase: true,
       trim: true,
     },
@@ -53,19 +54,26 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.pre('save', async function (next) {
+/**
+ * Pre-save Middleware
+ * FIXED: Removed 'next' parameter. 
+ * Since this is an async function, Mongoose waits for it to finish automatically.
+ */
+userSchema.pre('save', async function () {
+  // 1. If password is not modified, simply return (exit the function)
   if (!this.isModified('password')) {
-    return next();
+    return; 
   }
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+
+  // 2. Hash the password
+  // (If this fails, the error will automatically bubble up to Mongoose)
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
+/**
+ * Compare Password Method
+ */
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

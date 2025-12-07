@@ -114,7 +114,7 @@ npm run prod
 ### Server Status
 ✅ **Currently Running** on http://localhost:5000
 - Environment: development
-- Database: mongodb://localhost:27017/betting_dev
+- Database: mongodb+srv://database_admin:MahadevMakta@4753@mahadevmatka.wvjr16t.mongodb.net/?appName=MahadevMatka_dev
 - API Version: v1
 
 ### Next Steps

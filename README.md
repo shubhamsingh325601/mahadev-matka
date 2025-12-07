@@ -43,7 +43,7 @@ The application supports three environments with separate configurations:
 npm run dev
 ```
 - **Port**: 5000
-- **Database**: Local MongoDB (mongodb://localhost:27017/betting_dev)
+- **Database**: Local MongoDB (mongodb+srv://database_admin:MahadevMakta@4753@mahadevmatka.wvjr16t.mongodb.net/?appName=MahadevMatka_dev)
 - **Log Level**: debug
 
 ### Staging

@@ -27,7 +27,7 @@ const isValidType = (value, type) => {
   }
 };
 
-const validateField = (fieldName, value, rule) => {
+const validateField = async (fieldName, value, rule, data) => {
   // Check if required and missing
   if (rule.required && (value === undefined || value === null || value === '')) {
     return {
@@ -97,19 +97,39 @@ const validateField = (fieldName, value, rule) => {
     };
   }
 
+  // Matches validation (e.g., confirmPassword === password)
+  if (rule.matches && data && value !== data[rule.matches]) {
+    return {
+      valid: false,
+      error: `${fieldName} must match ${rule.matches}`,
+    };
+  }
+
+  // Unique validation (should be handled in service layer, but exposed here for middleware)
+  if (rule.unique && rule.isUnique && !(await rule.isUnique(value))) {
+    return {
+      valid: false,
+      error: `${fieldName} already exists`,
+    };
+  }
+
   return { valid: true };
 };
 
-const validateData = (data, rules) => {
+const validateData = async (data, rules) => {
   const errors = [];
+  const validatedData = {};
 
   // Check all defined rules
   for (const [fieldName, rule] of Object.entries(rules)) {
     const value = data[fieldName];
-    const validation = validateField(fieldName, value, rule);
+    const validation = await validateField(fieldName, value, rule, data);
 
     if (!validation.valid) {
       errors.push(validation.error);
+    } else if (value !== undefined) {
+      // Only add to validatedData if it's a valid field and not undefined
+      validatedData[fieldName] = value;
     }
   }
 
@@ -123,6 +143,7 @@ const validateData = (data, rules) => {
   return {
     valid: errors.length === 0,
     errors,
+    validatedData,
   };
 };
 
