@@ -1,7 +1,9 @@
 name: CI/CD to Render
 
+# Trigger this workflow only when code is pushed directly to the deployment branch
 on:
   push:
+    # Adjust 'master' if your main branch is called 'main'
     branches:
       - master
 
@@ -11,27 +13,34 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '18.x'
           cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Lint (and Fix if needed)
-        # Your logic: If lint fails (||), run lint:fix. 
-        # If lint:fix succeeds, the pipeline continues.
-        run: |
-          echo "Running Lint..."
-          npm run lint || (echo "Lint failed! Attempting to fix..." && npm run lint:fix)
+      - name: Run Lint Check
+        # IMPORTANT: We check for clean linting here. 
+        # If the code isn't clean, the job fails, and deployment is halted.
+        # Developers MUST fix lint errors in the PR check before merging.
+        run: npm run lint
+
+      # 🚨 RECOMMENDED: Run tests before deploying to ensure a working build.
+      # - name: Run Tests
+      #   run: npm test
 
       - name: Trigger Render Deployment
-        # This only runs if the previous steps passed
-        if: success()
+        # This step will only run if ALL previous steps (lint, install, etc.) passed.
+        # This is a safer default than 'if: success()'.
+        env:
+          # Use an environment variable to pass the secret securely
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }} 
         run: |
-          echo "Linting passed/fixed. Triggering Render Deploy..."
-          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+          echo "Linting passed. Triggering Render Deploy..."
+          # Use the environment variable for the curl command
+          curl -X POST "$RENDER_DEPLOY_HOOK"

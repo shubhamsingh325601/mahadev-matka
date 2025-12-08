@@ -1,31 +1,36 @@
 name: Node.js CI (Pull Request Check)
 
+# Trigger this workflow when a Pull Request is opened, reopened, or updated
 on:
   pull_request:
+    # Ensure the target branch (base branch) is correct.
+    # Adjust 'master' if your main branch is called 'main'
     branches: [ "master", "develop" ]
 
 jobs:
   test-and-validate:
+    # Use a specific, common Node.js CI environment
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Use the latest version
 
+      # Matrix strategy to test on multiple Node.js versions is often a good practice
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Use the latest version
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: '18.x' # Use '18.x' for better maintenance
+          cache: 'npm' # Caches node modules
 
       - name: Install Dependencies
+        # 'npm ci' requires a package-lock.json and is faster for CI
         run: npm ci
 
       - name: Run Lint Check
-        # This will FAIL if there are errors. 
-        # This is good! It tells you to run 'npm run lint:fix' locally before merging.
+        # This will FAIL the job if lint errors are found, enforcing pre-merge fixes.
         run: npm run lint
 
-      # If you have tests, uncomment this:
-      # - name: Run Tests
-      #   run: npm test
+      # 🚨 RECOMMENDED: Uncomment this to ensure your code is functionally correct!
+      - name: Run Tests
+        run: npm test
