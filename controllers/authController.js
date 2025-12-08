@@ -5,7 +5,7 @@
 
 const { authService } = require('../services'); // Adjust path as needed
 // Import the response utility
-const { sendSuccess } = require('../utils/response'); 
+const { sendSuccess } = require('../utils/response');
 
 /**
  * Register controller
@@ -14,7 +14,7 @@ const register = async (req, res, next) => {
   try {
     const { username, phone, password, confirmPassword } = req.body;
     const result = await authService.register({ username, phone, password, confirmPassword });
-    
+
     // Usage: sendSuccess(res, data, message, statusCode)
     sendSuccess(res, result, 'User registered successfully', 201);
   } catch (error) {
@@ -53,7 +53,7 @@ const refreshToken = async (req, res, next) => {
  */
 const logout = async (req, res, next) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
     const result = await authService.logout(userId);
     sendSuccess(res, result, 'Logged out successfully');
   } catch (error) {
@@ -92,7 +92,7 @@ const resetPassword = async (req, res, next) => {
  */
 const deleteAccount = async (req, res, next) => {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
     const result = await authService.deleteAccount(userId);
     sendSuccess(res, result, 'Account deleted successfully');
   } catch (error) {

@@ -53,13 +53,13 @@ const userSchema = new mongoose.Schema(
 
 /**
  * Pre-save Middleware
- * FIXED: Removed 'next' parameter. 
+ * FIXED: Removed 'next' parameter.
  * Since this is an async function, Mongoose waits for it to finish automatically.
  */
 userSchema.pre('save', async function () {
   // 1. If password is not modified, simply return (exit the function)
   if (!this.isModified('password')) {
-    return; 
+    return;
   }
 
   // 2. Hash the password

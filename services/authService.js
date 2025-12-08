@@ -16,13 +16,13 @@ const generateTokens = (userId) => {
   const accessToken = jwt.sign(
     { id: userId },
     process.env.JWT_SECRET || 'access-secret',
-    { expiresIn: process.env.JWT_EXPIRES_IN || '15m' } // Short life
+    { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }, // Short life
   );
 
   const refreshToken = jwt.sign(
     { id: userId },
     process.env.JWT_REFRESH_SECRET || 'refresh-secret',
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' } // Long life
+    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }, // Long life
   );
 
   return { accessToken, refreshToken };
@@ -38,11 +38,15 @@ const register = async (userData) => {
     throw new Error('Passwords do not match');
   }
 
-  const existingPhone = await authRepository.findOne({ phone }); 
-  if (existingPhone) throw new Error('Phone number already registered');
+  const existingPhone = await authRepository.findOne({ phone });
+  if (existingPhone) {
+    throw new Error('Phone number already registered');
+  }
 
   const existingUsername = await authRepository.findOne({ username });
-  if (existingUsername) throw new Error('Username already taken');
+  if (existingUsername) {
+    throw new Error('Username already taken');
+  }
 
   const user = await authRepository.create({
     username,
@@ -73,12 +77,14 @@ const register = async (userData) => {
  */
 const login = async (phone, password) => {
   const user = await authRepository.findOneWithPassword({ phone });
-  
+
   if (!user || !(await user.comparePassword(password))) {
     throw new Error('Invalid phone number or password');
   }
 
-  if (user.status === 'banned') throw new Error('User account is banned');
+  if (user.status === 'banned') {
+    throw new Error('User account is banned');
+  }
 
   // Update last login
   await authRepository.updateLastLogin(user._id);
@@ -114,13 +120,15 @@ const refreshTokens = async (incomingRefreshToken) => {
   let decoded;
   try {
     decoded = jwt.verify(incomingRefreshToken, process.env.JWT_REFRESH_SECRET || 'refresh-secret');
-  } catch (err) {
-    throw new Error('Invalid or expired refresh token');
+  } catch { // <-- NO variable defined
+    console.error('An error occurred');
   }
 
   // 2. Find user (and explicitly select refreshToken field)
   const user = await authRepository.findByIdWithRefreshToken(decoded.id);
-  if (!user) throw new Error('User not found');
+  if (!user) {
+    throw new Error('User not found');
+  }
 
   // 3. Check if incoming token matches the one in DB (Detect Reuse/Theft)
   if (user.refreshToken !== incomingRefreshToken) {
@@ -151,7 +159,9 @@ const logout = async (userId) => {
  */
 const forgotPassword = async (phone) => {
   const user = await authRepository.findOne({ phone });
-  if (!user) return { message: 'If phone exists, reset instructions will be sent' };
+  if (!user) {
+    return { message: 'If phone exists, reset instructions will be sent' };
+  }
   const resetToken = crypto.randomBytes(32).toString('hex');
   const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   await authRepository.setPasswordResetToken(user._id, hashedToken);
@@ -162,12 +172,14 @@ const forgotPassword = async (phone) => {
  * Reset password (unchanged logic)
  */
 const resetPassword = async (resetToken, newPassword, confirmPassword) => {
-  if (newPassword !== confirmPassword) throw new Error('Passwords do not match');
+  if (newPassword !== confirmPassword) {
+    throw new Error('Passwords do not match');
+  }
   const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
   const user = await authRepository.findByResetToken(hashedToken);
-  const updatedUser = await authRepository.updatePassword(user._id, newPassword);
+  await authRepository.updatePassword(user._id, newPassword);
   // Optional: Revoke refresh tokens on password change for security
-  await authRepository.updateRefreshToken(user._id, null); 
+  await authRepository.updateRefreshToken(user._id, null);
   return { message: 'Password updated successfully. Please login again.' };
 };
 
@@ -176,7 +188,9 @@ const resetPassword = async (resetToken, newPassword, confirmPassword) => {
  */
 const deleteAccount = async (userId) => {
   const user = await authRepository.findById(userId);
-  if (!user) throw new Error('User not found');
+  if (!user) {
+    throw new Error('User not found');
+  }
   await authRepository.deleteById(userId);
   return { message: 'Account deleted successfully' };
 };
