@@ -4,13 +4,13 @@ const config = require('./environment');
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Bating Backend API Documentation',
+    title: 'Mahadev Matka API Documentation',
     version: config.API_VERSION,
     description:
-      'This is the API documentation for the Bating Backend application. It provides endpoints for user management and authentication.',
+      'This is the API documentation for the Mahadev Matka application. It provides endpoints for user management and authentication.',
     contact: {
       name: 'Shubham Singh',
-      email: 'your.email@example.com',
+      email: 'Shubham.singh325601@gmail.com',
     },
   },
   servers: [
