@@ -23,6 +23,7 @@ const validationRules = {
     resetPassword: {
       resetToken: { required: true, type: 'string' },
       newPassword: { required: true, type: 'string', min: 6, max: 50 },
+      confirmPassword: { required: true, type: 'string', min: 6, max: 50 },
     },
     verifyEmail: {
       userId: { required: true, type: 'string' },

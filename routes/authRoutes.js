@@ -194,17 +194,17 @@ router.post('/refresh-token', validate('auth', 'refreshToken'), authController.r
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - phone
  *             properties:
- *               email:
+ *               phone:
  *                 type: string
- *                 format: email
- *                 description: The user's email address for password reset.
+ *                 format: "1234567890"
+ *                 description: The user's phone for password reset.
  *             example:
- *               email: john.doe@example.com
+ *               phone: "1234567890"
  *     responses:
  *       200:
- *         description: Password reset link sent to email (if user exists)
+ *         description: Password reset link sent to email (if user provided the email)
  *         content:
  *           application/json:
  *             schema:
@@ -248,6 +248,7 @@ router.post('/forgot-password', validate('auth', 'forgotPassword'), authControll
  *             required:
  *               - resetToken
  *               - newPassword
+ *               - confirmPassword
  *             properties:
  *               resetToken:
  *                 type: string
@@ -256,9 +257,14 @@ router.post('/forgot-password', validate('auth', 'forgotPassword'), authControll
  *                 type: string
  *                 format: password
  *                 description: The new password for the user.
+ *               confirmPassword:
+ *                 type: string
+ *                 format: password
+ *                 description: The new password for the user.
  *             example:
  *               resetToken: someverylongresettokensentbyemail
  *               newPassword: newstrongpassword123
+ *               confirmPassword: newstrongpassword123
  *     responses:
  *       200:
  *         description: Password updated successfully
