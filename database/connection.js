@@ -1,18 +1,23 @@
 const mongoose = require('mongoose');
-const config = require('@config');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(config.MONGODB_URI);
+    await mongoose.connect(
+      'mongodb+srv://database_admin:MahadevMakta%404753@mahadevmatka.wvjr16t.mongodb.net/MahadevMatka',
+      {
+        serverSelectionTimeoutMS: 5000,  // Max wait.
+        socketTimeoutMS: 45000,
+        maxPoolSize: 10,                 // Faster performance.
+      }
+    );
+
     console.log('✓ MongoDB connected successfully');
     return mongoose.connection;
+
   } catch (error) {
-    console.error('✗ MongoDB connection error:', error.message);
-    // Retry connection after 5 seconds
-    // eslint-disable-next-line no-undef
-    setTimeout(() => {
-      connectDB();
-    }, 5000);
+    console.error('✗ MongoDB error:', error.message);
+
+    setTimeout(connectDB, 5000); // Retry after 5 sec
   }
 };
 
@@ -25,7 +30,4 @@ const disconnectDB = async () => {
   }
 };
 
-module.exports = {
-  connectDB,
-  disconnectDB,
-};
+module.exports = { connectDB, disconnectDB };
